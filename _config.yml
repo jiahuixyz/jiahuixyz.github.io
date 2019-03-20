@@ -88,4 +88,4 @@ archive_generator:
 deploy:
   type: git
   repo: https://github.com/jiahuixyz/jiahuixyz.github.io.git
-  branch: public
+  branch: master
