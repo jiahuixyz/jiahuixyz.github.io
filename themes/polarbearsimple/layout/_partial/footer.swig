@@ -5,7 +5,7 @@
         {{ theme.since }} -
     {% endif %}
     {{ current }}
-    <span class="footer-author">{{ config.author }}.</span>
+    <span class="footer-author"><a class="hexo-link" href="https://github.com/jiahuixyz/">{{ config.author }}</a>.</span>
     <span class="power-by">
         {{ __('footer.powered', '<a class="hexo-link" href="https://hexo.io/">Hexo</a> and <a class="theme-link" href="https://github.com/henryhuang/hexo-theme-polarbearsimple">Polar Bear Simple</a>') }}
     </span>
