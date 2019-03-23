@@ -4,7 +4,7 @@ date: 2019-03-23 14:39:14
 tags:
 ---
 
-#### 起步
+# **起步**
 
 设置username&email
 
@@ -27,7 +27,7 @@ $ git add LICENSE
 $ git commit -m 'initial project version'
 ```
 
-#### 记录文件变化
+# **记录文件变化**
 
 添加至暂存区
 
@@ -75,7 +75,7 @@ git commit -a -m 'added new benchmarks'
 # 注意：只会提交已经跟踪过的文件，不会提交新添加的文件
 ```
 
-移除文件（即脱离追踪）：
+移除文件（即脱离追踪）
 
 ```
 $ git rm PROJECTS.md
@@ -110,7 +110,7 @@ git checkout -- file
 ![The picture was not found.
 ](https://jiahuixyz.github.io/img-service/img/git-life-cycle.png)
 
-#### 远程仓库的使用
+# **远程仓库的使用**
 
 查看远程仓库
 
@@ -171,7 +171,7 @@ $ git branch --set-upstream-to origin/serverfix
 # --set-upstream-to也可以用-u代替
 ```
 
-#### git pull&git fetch
+# **git pull&git fetch**
 
 ```shell
 git pull origin master
@@ -191,7 +191,7 @@ git diff tmp //將当前分支和tmp进行对比
 git merge tmp //合并tmp分支到当前分支
 ```
 
-#### 分支
+# **分支**
 
 新建分支
 
