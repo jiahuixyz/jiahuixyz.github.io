@@ -41,7 +41,7 @@
 <meta property="og:description" content="起步设置username&amp;amp;email 12$ git config --global user.name &amp;quot;John Doe&amp;quot;$ git config --global user.email johndoe@example.com 查看配置 1git config --list 初始化仓库、跟踪文件并提交1234$ git init$ git add *.c$ git">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://jiahuixyz.github.io/img-service/img/git-life-cycle.png">
-<meta property="og:updated_time" content="2019-03-23T06:39:46.075Z">
+<meta property="og:updated_time" content="2019-03-23T06:49:44.555Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Git简明指南">
 <meta name="twitter:description" content="起步设置username&amp;amp;email 12$ git config --global user.name &amp;quot;John Doe&amp;quot;$ git config --global user.email johndoe@example.com 查看配置 1git config --list 初始化仓库、跟踪文件并提交1234$ git init$ git add *.c$ git">
@@ -135,12 +135,12 @@
 
     
             <div class="post-content">
-            <h4 id="起步"><a href="#起步" class="headerlink" title="起步"></a>起步</h4><p>设置username&amp;email</p>
+            <h1 id="起步"><a href="#起步" class="headerlink" title="起步"></a><strong>起步</strong></h1><p>设置username&amp;email</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git config --global user.name &quot;John Doe&quot;</span><br><span class="line">$ git config --global user.email johndoe@example.com</span><br></pre></td></tr></table></figure>
 <p>查看配置</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --list</span><br></pre></td></tr></table></figure>
 <p>初始化仓库、跟踪文件并提交<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ git init</span><br><span class="line">$ git add *.c</span><br><span class="line">$ git add LICENSE</span><br><span class="line">$ git commit -m &apos;initial project version&apos;</span><br></pre></td></tr></table></figure></p>
-<h4 id="记录文件变化"><a href="#记录文件变化" class="headerlink" title="记录文件变化"></a>记录文件变化</h4><p>添加至暂存区</p>
+<h1 id="记录文件变化"><a href="#记录文件变化" class="headerlink" title="记录文件变化"></a><strong>记录文件变化</strong></h1><p>添加至暂存区</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git add file</span><br><span class="line"># 这是个多功能命令：可以用它开始跟踪新文件，或者把跟踪后又被修改的文件放到暂存区，还能用于合并时把有冲突的文件标记为已解决状态。</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>注意！如果你git add之后修改文件，这个文件会同时出现在暂存区和非暂存区,这时git commint只提交你最后一次运行 git add 命令时的那个版本，而不是你的最新版本。</p>
@@ -151,7 +151,7 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">git diff --cached</span><br><span class="line"><span class="meta">#</span> 暂存后（git add后）的文件与原始版本的对比</span><br><span class="line"></span><br><span class="line">git diff</span><br><span class="line"><span class="meta">#</span> 未暂存（git add前）的文件与原始版本的对比</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 也就是说，git add之前用git diff，之后用git diff --cached。</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 注意，如果暂存（git add）后又修改了文件，则git diff比较未暂存的文件与暂存（git add）时的文件。</span><br></pre></td></tr></table></figure>
 <p>跳过使用暂存区域（即跳过git add）</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git commit -a -m 'added new benchmarks'</span><br><span class="line"><span class="meta">#</span> 注意：只会提交已经跟踪过的文件，不会提交新添加的文件</span><br></pre></td></tr></table></figure>
-<p>移除文件（即脱离追踪）：</p>
+<p>移除文件（即脱离追踪）</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git rm PROJECTS.md</span><br></pre></td></tr></table></figure>
 <p>移动或重命名</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git mv README.md README</span><br></pre></td></tr></table></figure>
@@ -164,7 +164,7 @@
 <p>文件状态变化周期图：</p>
 <p><img src="https://jiahuixyz.github.io/img-service/img/git-life-cycle.png" alt="The picture was not found.
 "></p>
-<h4 id="远程仓库的使用"><a href="#远程仓库的使用" class="headerlink" title="远程仓库的使用"></a>远程仓库的使用</h4><p>查看远程仓库</p>
+<h1 id="远程仓库的使用"><a href="#远程仓库的使用" class="headerlink" title="远程仓库的使用"></a><strong>远程仓库的使用</strong></h1><p>查看远程仓库</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> git remote -v</span><br><span class="line">origin	https://github.com/schacon/ticgit (fetch)</span><br><span class="line">origin	https://github.com/schacon/ticgit (push)</span><br><span class="line"><span class="meta">#</span> orgin是远程仓库的别名，默认origin</span><br></pre></td></tr></table></figure>
 <p>详细查看远程仓库</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git remote show origin</span><br><span class="line"># 它会列出远程仓库的 URL 与跟踪分支的信息，</span><br><span class="line"># 告诉你git pull时哪两个分支会合并，git push时会推送到哪个分支</span><br></pre></td></tr></table></figure>
@@ -183,10 +183,10 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git fetch --all</span><br><span class="line">$ git branch -vv</span><br><span class="line"># -vv并没有连接服务器，所以需要先fetch，-vv能够查看本地分支是否落后远程分支</span><br></pre></td></tr></table></figure>
 <p>修改当前分支的追踪分支</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> git branch --set-upstream-to origin/serverfix</span><br><span class="line"><span class="meta">#</span> --set-upstream-to也可以用-u代替</span><br></pre></td></tr></table></figure>
-<h4 id="git-pull-amp-git-fetch"><a href="#git-pull-amp-git-fetch" class="headerlink" title="git pull&amp;git fetch"></a>git pull&amp;git fetch</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git pull origin master</span><br><span class="line"><span class="meta">#</span> 相当于从远程获取最新版本并merge到本地</span><br></pre></td></tr></table></figure>
+<h1 id="git-pull-amp-git-fetch"><a href="#git-pull-amp-git-fetch" class="headerlink" title="git pull&amp;git fetch"></a><strong>git pull&amp;git fetch</strong></h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git pull origin master</span><br><span class="line"><span class="meta">#</span> 相当于从远程获取最新版本并merge到本地</span><br></pre></td></tr></table></figure>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git fetch origin</span><br><span class="line"><span class="meta">#</span> 不会自动创建本地分支，只有一个不可以修改的 origin/master 指针，接下来你可以选择merge或checkout</span><br></pre></td></tr></table></figure>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git fetch origin master:tmp //从远程仓库master分支获取最新，checkou到本地建立tmp分支</span><br><span class="line"></span><br><span class="line">git diff tmp //將当前分支和tmp进行对比</span><br><span class="line"></span><br><span class="line">git merge tmp //合并tmp分支到当前分支</span><br></pre></td></tr></table></figure>
-<h4 id="分支"><a href="#分支" class="headerlink" title="分支"></a>分支</h4><p>新建分支</p>
+<h1 id="分支"><a href="#分支" class="headerlink" title="分支"></a><strong>分支</strong></h1><p>新建分支</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch branchname</span><br></pre></td></tr></table></figure>
 <p>删除分支</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -d branchname</span><br></pre></td></tr></table></figure>
