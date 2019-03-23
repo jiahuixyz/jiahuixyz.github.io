@@ -87,5 +87,7 @@ archive_generator:
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repo: https://github.com/jiahuixyz/jiahuixyz.github.io.git
+  repo: git@github.com:jiahuixyz/jiahuixyz.github.io.git
   branch: master
+
+baidu_analytics: d26aecfb935107a8552abee5566e5df3
