@@ -91,3 +91,5 @@ deploy:
   branch: master
 
 baidu_analytics: d26aecfb935107a8552abee5566e5df3
+
+all_minifier: true
