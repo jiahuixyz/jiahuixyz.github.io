@@ -1,0 +1,325 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  
+  <title>Spring IOC和AOP必知必会 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Spring-IOC Spring-AOP JDK动态代理 BeanPostProcessor实现自定义注解  Spring-IOC所谓IoC，对于spring框架来说，就是由spring来负责控制对象的生命周期和对象间的关系，而不是传统的手动去控制对象的创建。 从配置上来说，相当于把代码中的依赖关系转移到xml配置文件中。 优点:通过使用IOC，再加上Spring提倡的面向接口编程，能很大程度">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring IOC和AOP必知必会">
+<meta property="og:url" content="http://example.com/2019/04/11/Spring-IOC%E5%92%8CAOP%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Spring-IOC Spring-AOP JDK动态代理 BeanPostProcessor实现自定义注解  Spring-IOC所谓IoC，对于spring框架来说，就是由spring来负责控制对象的生命周期和对象间的关系，而不是传统的手动去控制对象的创建。 从配置上来说，相当于把代码中的依赖关系转移到xml配置文件中。 优点:通过使用IOC，再加上Spring提倡的面向接口编程，能很大程度">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-04-11T22:03:10.000Z">
+<meta property="article:modified_time" content="2023-05-29T06:51:52.804Z">
+<meta property="article:author" content="liujiahui">
+<meta name="twitter:card" content="summary">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    <link href="//fonts.useso.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+  
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <nav id="upper-nav" class="inner">
+      <a id="main-nav-toggle" class="nav-icon"></a>
+      <div class="sub-nav">
+        
+        
+          <a id="nav-github" class="nav-icon" target="_blank" rel="noopener" href="https://github.com/jiahuixyz"></a>
+        
+      </div>
+    </nav>
+    <div id="header-title">
+      
+        <h1 id="blog-title-wrap">
+          <a href="/" id="blog-title">念牧童的博客</a>
+        </h1>
+      
+    </div>
+    <div id="contenedor">
+      <ul class="cube">
+        <li class="cara">Hexo</li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+      </ul>
+    </div>
+    <nav id="main-nav">
+      
+        <a class="main-nav-link" href="/">Home</a>
+      
+        <a class="main-nav-link" href="/archives">Archives</a>
+      
+        <a class="main-nav-link" href="/about">About</a>
+      
+<!--       <a class="main-nav-link st-search-show-outputs">Search</a> -->
+    </nav>
+  </div>
+</header>
+
+    <div class="outer">
+      <section id="main"><article id="post-Spring-IOC和AOP必知必会" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2019/04/11/Spring-IOC%E5%92%8CAOP%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/" class="article-date">
+  <time datetime="2019-04-11T22:03:10.000Z" itemprop="datePublished">2019-04-11</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Spring IOC和AOP必知必会
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <ul>
+<li>Spring-IOC</li>
+<li>Spring-AOP</li>
+<li>JDK动态代理</li>
+<li>BeanPostProcessor实现自定义注解</li>
+</ul>
+<h2 id="Spring-IOC"><a href="#Spring-IOC" class="headerlink" title="Spring-IOC"></a>Spring-IOC</h2><p><strong>所谓IoC</strong>，对于spring框架来说，就是由spring来负责控制对象的生命周期和对象间的关系，而不是传统的手动去控制对象的创建。</p>
+<p><strong>从配置上来说</strong>，相当于把代码中的依赖关系转移到xml配置文件中。</p>
+<p><strong>优点</strong>:通过使用IOC，再加上Spring提倡的面向接口编程，能很大程度实现组件之间的解耦，利于功能复用，最终提高了项目整体的灵活性和可维护性。</p>
+<p><strong>DI(依赖注入</strong>)其实就是IOC的另外一种说法，IoC容器动态的向某个对象提供它所需要的其他对象。</p>
+<h2 id="Spring-AOP"><a href="#Spring-AOP" class="headerlink" title="Spring-AOP"></a>Spring-AOP</h2><blockquote>
+<p>AOP：Aspect Orient Programming，面向切面编程；用来处理具有横切性质的系统级服务，如事务管理、安全检查、缓存、对象池管理等。</p>
+</blockquote>
+<p>使用场景：</p>
+<ul>
+<li>Authentication 权限</li>
+<li>Caching 缓存</li>
+<li>Context passing 内容传递</li>
+<li>Error handling 错误处理</li>
+<li>Lazy loading　懒加载</li>
+<li>Debugging　调试</li>
+<li>logging, tracing, profiling and monitoring　 记录跟踪　优化　校准</li>
+<li>Performance optimization　性能优化</li>
+<li>Persistence　持久化</li>
+<li>Resource pooling　资源池</li>
+<li>Synchronization　同步</li>
+<li>Transactions  事务</li>
+</ul>
+<p>AOP分类：</p>
+<ul>
+<li>静态AOP实现：AspectJ，编译阶段修改</li>
+<li>动态AOP实现：Spring AOP,底层使用JDK动态代理或cglib</li>
+</ul>
+<p>基本概念：</p>
+<ul>
+<li>Aspect -切面</li>
+<li>Joinpoint -连接点</li>
+<li>Advice -增强处理</li>
+<li>Pointcut -切入点<span id="more"></span>
+<blockquote>
+<p>Spring AOP不需要在编译时对目标类进行增强，而是在运行时生成目标类的代理类，该代理类要么与目标类实现相同的接口（JDK动态代理处理策略），要么是目标类的子类（cglib处理策略）。<strong>处理策略可以自动切换，也可以强制指定。</strong></p>
+</blockquote>
+</li>
+</ul>
+<p>xml配置：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aop:aspectj-autoproxy</span>/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">&quot;com.fish&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">context:include-filter</span> <span class="attr">type</span>=<span class="string">&quot;annotation&quot;</span> <span class="attr">expression</span>=<span class="string">&quot;org.aspectj.lang.annotation.Aspect&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">context:component-scan</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>定义切面和切入点：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AuthAspect</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Before(&quot;execution(* com.fish.handler.*.*(..))&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">authority</span><span class="params">()</span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;执行权限检查...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Around增强处理通常需要在线程安全的环境下使用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AuthAspect</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Around(&quot;execution(* com.fish.handler.*.*(..))&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">authority</span><span class="params">(ProceedingJoinPoint proceedingJoinPoint)</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">        <span class="type">long</span> <span class="variable">start</span> <span class="operator">=</span> System.currentTimeMillis();</span><br><span class="line">        <span class="comment">// 此处可修改方法入参</span></span><br><span class="line">        Object[] args = proceedingJoinPoint.getArgs();</span><br><span class="line">        <span class="comment">// 此处可修改方法返回值</span></span><br><span class="line">        <span class="type">Object</span> <span class="variable">rvt</span> <span class="operator">=</span> proceedingJoinPoint.proceed(args);</span><br><span class="line">        <span class="type">long</span> <span class="variable">end</span> <span class="operator">=</span> System.currentTimeMillis();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 方法名</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">methodName</span> <span class="operator">=</span> proceedingJoinPoint.getSignature().getName();</span><br><span class="line">        <span class="comment">// 全限定类名</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">methodDeclaringTypeName</span> <span class="operator">=</span> proceedingJoinPoint.getSignature().getDeclaringTypeName();</span><br><span class="line">        System.out.println(methodDeclaringTypeName + <span class="string">&quot;.&quot;</span> + methodName</span><br><span class="line">                + <span class="string">&quot;()方法执行所用的时间为：&quot;</span> + (end - start)/<span class="number">1000</span> + <span class="string">&quot;s&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="JDK动态代理"><a href="#JDK动态代理" class="headerlink" title="JDK动态代理"></a>JDK动态代理</h2><ul>
+<li>Proxy</li>
+<li>InvocationHandler</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyInvokationHandler</span> <span class="keyword">implements</span> <span class="title class_">InvocationHandler</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Object target;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">MyInvokationHandler</span><span class="params">(Object target)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.target = target;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;进行增强处理...&quot;</span>);</span><br><span class="line">        <span class="comment">// 使用反射以target作为调用者执行方法</span></span><br><span class="line">        <span class="type">Object</span> <span class="variable">result</span> <span class="operator">=</span> method.invoke(target,args);</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">HelloIFace</span> <span class="variable">iface</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HelloImpl</span>();</span><br><span class="line">        <span class="type">MyInvokationHandler</span> <span class="variable">handler</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MyInvokationHandler</span>(iface);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 创建代理对象</span></span><br><span class="line">        <span class="type">HelloIFace</span> <span class="variable">proxy</span> <span class="operator">=</span> (HelloIFace)Proxy.newProxyInstance(</span><br><span class="line">            iface.getClass().getClassLoader(),</span><br><span class="line">            iface.getClass().getInterfaces(),handler);</span><br><span class="line">        proxy.sayHello();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="BeanPostProcessor实现自定义注解"><a href="#BeanPostProcessor实现自定义注解" class="headerlink" title="BeanPostProcessor实现自定义注解"></a>BeanPostProcessor实现自定义注解</h2><ul>
+<li>Bean后处理器（BeanPostProcessor）：是IOC的扩展，对Bean进一步增强处理</li>
+<li>容器后处理器：如属性占位符配置器、重写占位符配置器</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target(ElementType.METHOD)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> LogTest &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloHandler</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@LogTest</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">sayHello</span><span class="params">()</span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Hello!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此示例使用cjlib创建代理，也可采用Proxy的方式。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LogAnnotationBeanPostProcessor</span> <span class="keyword">implements</span> <span class="title class_">BeanPostProcessor</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化之前</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">postProcessBeforeInitialization</span><span class="params">(Object o, String s)</span> <span class="keyword">throws</span> BeansException &#123;</span><br><span class="line">        <span class="keyword">return</span> o;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化之后</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">postProcessAfterInitialization</span><span class="params">(Object o, String s)</span> <span class="keyword">throws</span> BeansException &#123;</span><br><span class="line">        Method[] methods = ReflectionUtils.getAllDeclaredMethods(o.getClass());</span><br><span class="line">        <span class="keyword">if</span> (methods != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">for</span> (Method method : methods) &#123;</span><br><span class="line">                <span class="type">LogTest</span> <span class="variable">logTest</span> <span class="operator">=</span> AnnotationUtils.findAnnotation(method, LogTest.class);</span><br><span class="line">                <span class="keyword">if</span> (logTest != <span class="literal">null</span>) &#123;</span><br><span class="line">                    <span class="type">Enhancer</span> <span class="variable">enhancer</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Enhancer</span>();</span><br><span class="line">                    <span class="comment">// 设置父类为被代理的类</span></span><br><span class="line">                    enhancer.setSuperclass(o.getClass());</span><br><span class="line">                    enhancer.setCallback(<span class="keyword">new</span> <span class="title class_">MethodInterceptor</span>() &#123;</span><br><span class="line">                        <span class="meta">@Override</span></span><br><span class="line">                        <span class="keyword">public</span> Object <span class="title function_">intercept</span><span class="params">(Object o, Method method, Object[] objects, MethodProxy methodProxy)</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">                            System.out.println(<span class="string">&quot;Before:&quot;</span>+method);</span><br><span class="line">                            Object object=methodProxy.invokeSuper(o, objects);</span><br><span class="line">                            System.out.println(<span class="string">&quot;After:&quot;</span>+method);</span><br><span class="line">                            <span class="keyword">return</span> object;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;);</span><br><span class="line">                    <span class="keyword">return</span> enhancer.create();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> o;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">    <span class="type">ApplicationContext</span> <span class="variable">apx</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ClassPathXmlApplicationContext</span>(<span class="string">&quot;apx.xml&quot;</span>);</span><br><span class="line">    <span class="type">HelloHandler</span> <span class="variable">helloHandler</span> <span class="operator">=</span> apx.getBean(HelloHandler.class);</span><br><span class="line">    helloHandler.sayHello();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>配置文件：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">&quot;com.fish&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">aop:aspectj-autoproxy</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://example.com/2019/04/11/Spring-IOC%E5%92%8CAOP%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/" data-id="cli8hs3fy0009b4os55dj3mwe" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/05/18/Java%E6%8E%92%E5%BA%8F%E4%B9%8BComparable%E4%B8%8EComparator/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Java排序之Comparable与Comparator
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/04/11/Hibernate%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6%E4%B8%8ESpring%E7%BC%93%E5%AD%98%E6%A1%86%E6%9E%B6%E7%9A%84%E5%8C%BA%E5%88%AB%E4%B8%8E%E8%81%94%E7%B3%BB/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Hibernate缓存机制与Spring缓存框架的区别与联系</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/03/13/Spring%E4%BA%8B%E5%8A%A1%E4%BA%94%E8%BE%B9%E5%BD%A2/">Spring事务五边形</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/07/DispatcherServlet%E8%AF%B7%E6%B1%82%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B/">DispatcherServlet请求处理流程</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/12/Java%E5%AE%9E%E7%8E%B0xml%E6%96%87%E4%BB%B6%E7%9A%84xsd%E6%A0%A1%E9%AA%8C%EF%BC%88schema%E6%A0%A1%E9%AA%8C%EF%BC%89/">Java实现xml文件的xsd校验（schema校验）</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/12/schema%E4%B8%8E%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4%E7%9A%84%E4%BD%BF%E7%94%A8%E6%A1%88%E4%BE%8B/">schema与命名空间的使用案例</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/11/%E4%BD%BF%E7%94%A8SpringAOP%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B3%A8%E8%A7%A3%E4%B9%8B%E5%88%87%E5%85%A5%E7%82%B9%E8%A1%A8%E8%BE%BE%E5%BC%8F/">使用SpringAOP实现自定义注解之切入点表达式</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2023 liujiahui<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/sun11/hexo-theme-paperbox" target="_blank">Paperbox</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+  <a href="#search" class="mobile-nav-link st-search-show-outputs">Search</a>
+</nav>
+
+  
+
+<!-- totop start -->
+<div id="totop">
+	<a title="To Top"></a>
+</div>
+<!-- totop end -->
+
+<!-- swiftype search start -->
+
+<!-- swiftype search end -->
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/lrsjng.jquery-qrcode/0.12.0/jquery.qrcode.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+</div>
+</body>
+</html>

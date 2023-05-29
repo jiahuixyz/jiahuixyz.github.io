@@ -1,0 +1,293 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  
+  <title>Hibernate缓存机制与Spring缓存框架的区别与联系 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Hibernate一级缓存 Hibernate二级缓存 Spring缓存机制 Hibernate缓存与Spring缓存的比较  Hibernate一级缓存一级缓存是Session级别的缓存(即当前Session有效)，默认启用。 一级缓存的key为ID(主键)。 当执行load&#x2F;get&#x2F;list&#x2F;iterator&#x2F;save&#x2F;update&amp;#x2F">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hibernate缓存机制与Spring缓存框架的区别与联系">
+<meta property="og:url" content="http://example.com/2019/04/11/Hibernate%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6%E4%B8%8ESpring%E7%BC%93%E5%AD%98%E6%A1%86%E6%9E%B6%E7%9A%84%E5%8C%BA%E5%88%AB%E4%B8%8E%E8%81%94%E7%B3%BB/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Hibernate一级缓存 Hibernate二级缓存 Spring缓存机制 Hibernate缓存与Spring缓存的比较  Hibernate一级缓存一级缓存是Session级别的缓存(即当前Session有效)，默认启用。 一级缓存的key为ID(主键)。 当执行load&#x2F;get&#x2F;list&#x2F;iterator&#x2F;save&#x2F;update&amp;#x2F">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-04-11T16:35:36.000Z">
+<meta property="article:modified_time" content="2023-05-29T06:51:52.804Z">
+<meta property="article:author" content="liujiahui">
+<meta name="twitter:card" content="summary">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    <link href="//fonts.useso.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+  
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <nav id="upper-nav" class="inner">
+      <a id="main-nav-toggle" class="nav-icon"></a>
+      <div class="sub-nav">
+        
+        
+          <a id="nav-github" class="nav-icon" target="_blank" rel="noopener" href="https://github.com/jiahuixyz"></a>
+        
+      </div>
+    </nav>
+    <div id="header-title">
+      
+        <h1 id="blog-title-wrap">
+          <a href="/" id="blog-title">念牧童的博客</a>
+        </h1>
+      
+    </div>
+    <div id="contenedor">
+      <ul class="cube">
+        <li class="cara">Hexo</li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+      </ul>
+    </div>
+    <nav id="main-nav">
+      
+        <a class="main-nav-link" href="/">Home</a>
+      
+        <a class="main-nav-link" href="/archives">Archives</a>
+      
+        <a class="main-nav-link" href="/about">About</a>
+      
+<!--       <a class="main-nav-link st-search-show-outputs">Search</a> -->
+    </nav>
+  </div>
+</header>
+
+    <div class="outer">
+      <section id="main"><article id="post-Hibernate缓存机制与Spring缓存框架的区别与联系" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2019/04/11/Hibernate%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6%E4%B8%8ESpring%E7%BC%93%E5%AD%98%E6%A1%86%E6%9E%B6%E7%9A%84%E5%8C%BA%E5%88%AB%E4%B8%8E%E8%81%94%E7%B3%BB/" class="article-date">
+  <time datetime="2019-04-11T16:35:36.000Z" itemprop="datePublished">2019-04-11</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Hibernate缓存机制与Spring缓存框架的区别与联系
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <ul>
+<li>Hibernate一级缓存</li>
+<li>Hibernate二级缓存</li>
+<li>Spring缓存机制</li>
+<li>Hibernate缓存与Spring缓存的比较</li>
+</ul>
+<h2 id="Hibernate一级缓存"><a href="#Hibernate一级缓存" class="headerlink" title="Hibernate一级缓存"></a>Hibernate一级缓存</h2><p>一级缓存是Session级别的缓存(即当前Session有效)，默认启用。</p>
+<p>一级缓存的key为ID(主键)。</p>
+<p>当执行load&#x2F;get&#x2F;list&#x2F;iterator&#x2F;save&#x2F;update&#x2F;saveOrUpdate等方法时会把得到的实体对象放入一级缓存中（只支持实体对象缓存，不支持属性的缓存），之后在同一个session范围内执行load&#x2F;get&#x2F;iterator等查询语句（不包括list）查询缓存过的数据时，Hibernate不会去数据库中查询。</p>
+<p>当程序保存或修改实体时，不会立即同步到数据库，而是保存在一级缓存中，只有程序显示调用Session的flush()或close()方法才会刷新至数据库，这样可以减少数据库的交互，提高数据库的访问性能。</p>
+<p>一级缓存清除方法：</p>
+<ul>
+<li>contains(object obj)</li>
+<li>evict(Object obj)</li>
+<li>clear()<span id="more"></span></li>
+</ul>
+<h2 id="Hibernate二级缓存"><a href="#Hibernate二级缓存" class="headerlink" title="Hibernate二级缓存"></a>Hibernate二级缓存</h2><p>二级缓存是SessionFactory级别的，是所有Session共享的，全局性的，需要手动开启；开启后查询时，Session会先查找一级缓存，再查找二级缓存，最后再查找数据库。</p>
+<p>二级缓存的key为ID(主键)，value为实体对象。一般load（），iterate（）使用到二级缓存，list()需要结合查询缓存使用。</p>
+<p>二级缓存需要指定缓存实现，如EhCache，并使用@Cache注解指定哪些实体类启用二级缓存，并指定缓存策略(一般为READ_ONLY)。</p>
+<p>Hibernate缓存策略(隔离级别)：</p>
+<ul>
+<li>只读(READ_ONLY)</li>
+<li>读&#x2F;写(READ_WRITE)</li>
+<li>非严格读&#x2F;写(NONSTRICT_READ_WRITE)</li>
+<li>事务(TRANSACTIONAL)</li>
+</ul>
+<h2 id="Spring缓存机制"><a href="#Spring缓存机制" class="headerlink" title="Spring缓存机制"></a>Spring缓存机制</h2><p>Spring缓存需要指定缓存实现(如EhCache)。</p>
+<p>相关注解：</p>
+<ul>
+<li>@Cacheable</li>
+<li>@CacheEvict</li>
+</ul>
+<p>对于一个支持缓存的方法，Spring会在其被调用后将其返回值缓存起来，以保证下次利用同样的参数来执行该方法时可以直接从缓存中获取结果，而不需要再次执行该方法。</p>
+<p>缓存的key默认是通过KeyGenerator生成的，其默认生成策略如下：</p>
+<ul>
+<li>如果方法没有参数，则使用0作为key。</li>
+<li>如果只有一个参数的话则使用该参数作为key。</li>
+<li>如果参数多于一个的话则使用所有参数的hashCode作为key。</li>
+</ul>
+<p>实际使用中需要自定义key的生成策略，如</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@Cacheable(key = &quot;#root.target&quot; + &quot;_&quot; + &quot;#root.method&quot; + &quot;_&quot; + &quot;#p0&quot; + &quot;_&quot; + &quot;#p1&quot;)</span><br></pre></td></tr></table></figure>
+
+<p>参考资料：<br><br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/2a584aaafad3">https://www.jianshu.com/p/2a584aaafad3</a><br><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/u013378306/article/details/52168628">https://blog.csdn.net/u013378306/article/details/52168628</a></p>
+<h2 id="Hibernate二级缓存与Spring缓存的比较"><a href="#Hibernate二级缓存与Spring缓存的比较" class="headerlink" title="Hibernate二级缓存与Spring缓存的比较"></a>Hibernate二级缓存与Spring缓存的比较</h2><p>与Hibernate SessionFactory级别的二级缓存相比，Spring缓存的级别更高，Spring缓存可以在控制器组件或业务逻辑组件级别进行缓存，这样应用完全无需重复调用底层的DAO组件（如基于Hibernate实现）的方法。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://example.com/2019/04/11/Hibernate%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6%E4%B8%8ESpring%E7%BC%93%E5%AD%98%E6%A1%86%E6%9E%B6%E7%9A%84%E5%8C%BA%E5%88%AB%E4%B8%8E%E8%81%94%E7%B3%BB/" data-id="cli8hs3fs0003b4os1raigqgm" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/04/11/Spring-IOC%E5%92%8CAOP%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Spring IOC和AOP必知必会
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/03/31/%E5%85%B3%E4%BA%8E%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E4%BD%A0%E5%BA%94%E8%AF%A5%E7%9F%A5%E9%81%93%E7%9A%84/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">关于单例模式你应该知道的</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/03/13/Spring%E4%BA%8B%E5%8A%A1%E4%BA%94%E8%BE%B9%E5%BD%A2/">Spring事务五边形</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/07/DispatcherServlet%E8%AF%B7%E6%B1%82%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B/">DispatcherServlet请求处理流程</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/12/Java%E5%AE%9E%E7%8E%B0xml%E6%96%87%E4%BB%B6%E7%9A%84xsd%E6%A0%A1%E9%AA%8C%EF%BC%88schema%E6%A0%A1%E9%AA%8C%EF%BC%89/">Java实现xml文件的xsd校验（schema校验）</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/12/schema%E4%B8%8E%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4%E7%9A%84%E4%BD%BF%E7%94%A8%E6%A1%88%E4%BE%8B/">schema与命名空间的使用案例</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/11/%E4%BD%BF%E7%94%A8SpringAOP%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B3%A8%E8%A7%A3%E4%B9%8B%E5%88%87%E5%85%A5%E7%82%B9%E8%A1%A8%E8%BE%BE%E5%BC%8F/">使用SpringAOP实现自定义注解之切入点表达式</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2023 liujiahui<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/sun11/hexo-theme-paperbox" target="_blank">Paperbox</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+  <a href="#search" class="mobile-nav-link st-search-show-outputs">Search</a>
+</nav>
+
+  
+
+<!-- totop start -->
+<div id="totop">
+	<a title="To Top"></a>
+</div>
+<!-- totop end -->
+
+<!-- swiftype search start -->
+
+<!-- swiftype search end -->
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/lrsjng.jquery-qrcode/0.12.0/jquery.qrcode.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+</div>
+</body>
+</html>

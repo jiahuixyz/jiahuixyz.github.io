@@ -1,0 +1,258 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  
+  <title>Java实现xml文件的xsd校验（schema校验） | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="JDK中的javax.xml包中有能进行schema校验的类库，但只能返回true或false，无法给出确切的错误信息。  Dom4j中给出了几种schema校验的思路，本文实现其中一种。Dom4j在github上的文档地址是：https:&#x2F;&#x2F;github.com&#x2F;dom4j&#x2F;dom4j&#x2F;wiki&#x2F;Cookbook 校验时，能够记录schema中所有不匹配的错误，但首先要保证xmL格式正确，否则">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java实现xml文件的xsd校验（schema校验）">
+<meta property="og:url" content="http://example.com/2020/01/12/Java%E5%AE%9E%E7%8E%B0xml%E6%96%87%E4%BB%B6%E7%9A%84xsd%E6%A0%A1%E9%AA%8C%EF%BC%88schema%E6%A0%A1%E9%AA%8C%EF%BC%89/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="JDK中的javax.xml包中有能进行schema校验的类库，但只能返回true或false，无法给出确切的错误信息。  Dom4j中给出了几种schema校验的思路，本文实现其中一种。Dom4j在github上的文档地址是：https:&#x2F;&#x2F;github.com&#x2F;dom4j&#x2F;dom4j&#x2F;wiki&#x2F;Cookbook 校验时，能够记录schema中所有不匹配的错误，但首先要保证xmL格式正确，否则">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-01-12T15:03:30.000Z">
+<meta property="article:modified_time" content="2023-05-29T06:51:52.804Z">
+<meta property="article:author" content="liujiahui">
+<meta name="twitter:card" content="summary">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    <link href="//fonts.useso.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+  
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <nav id="upper-nav" class="inner">
+      <a id="main-nav-toggle" class="nav-icon"></a>
+      <div class="sub-nav">
+        
+        
+          <a id="nav-github" class="nav-icon" target="_blank" rel="noopener" href="https://github.com/jiahuixyz"></a>
+        
+      </div>
+    </nav>
+    <div id="header-title">
+      
+        <h1 id="blog-title-wrap">
+          <a href="/" id="blog-title">念牧童的博客</a>
+        </h1>
+      
+    </div>
+    <div id="contenedor">
+      <ul class="cube">
+        <li class="cara">Hexo</li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+      </ul>
+    </div>
+    <nav id="main-nav">
+      
+        <a class="main-nav-link" href="/">Home</a>
+      
+        <a class="main-nav-link" href="/archives">Archives</a>
+      
+        <a class="main-nav-link" href="/about">About</a>
+      
+<!--       <a class="main-nav-link st-search-show-outputs">Search</a> -->
+    </nav>
+  </div>
+</header>
+
+    <div class="outer">
+      <section id="main"><article id="post-Java实现xml文件的xsd校验（schema校验）" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2020/01/12/Java%E5%AE%9E%E7%8E%B0xml%E6%96%87%E4%BB%B6%E7%9A%84xsd%E6%A0%A1%E9%AA%8C%EF%BC%88schema%E6%A0%A1%E9%AA%8C%EF%BC%89/" class="article-date">
+  <time datetime="2020-01-12T15:03:30.000Z" itemprop="datePublished">2020-01-12</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Java实现xml文件的xsd校验（schema校验）
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <blockquote>
+<p>JDK中的javax.xml包中有能进行schema校验的类库，但只能返回true或false，无法给出确切的错误信息。</p>
+</blockquote>
+<p>Dom4j中给出了几种schema校验的思路，本文实现其中一种。<br><br>Dom4j在github上的文档地址是：<a target="_blank" rel="noopener" href="https://github.com/dom4j/dom4j/wiki/Cookbook/">https://github.com/dom4j/dom4j/wiki/Cookbook</a></p>
+<p>校验时，能够记录schema中所有不匹配的错误，但首先要保证xmL格式正确，否则只输出格式错误信息。</p>
+<p>pom文件：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">	<span class="comment">&lt;!-- dom4j XML工具包 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>dom4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>dom4j<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">version</span>&gt;</span>1.6.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>jaxen<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jaxen<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">version</span>&gt;</span>1.1.4<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<p>主要代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">validateXMLByXSD</span><span class="params">()</span> &#123;</span><br><span class="line">     <span class="comment">// 从类路径下读取文件</span></span><br><span class="line">     <span class="type">URL</span> <span class="variable">xmlFileName</span> <span class="operator">=</span> SchemaValidateUtil.class.getClassLoader().getResource(<span class="string">&quot;test.xml&quot;</span>);</span><br><span class="line">     <span class="comment">// 输出为file:/D:/MyWorkSpace/FirstWorkSpace/validate-xml-test/target/classes/test_schema.xsd</span></span><br><span class="line">     <span class="type">String</span> <span class="variable">xsdFileName</span> <span class="operator">=</span> SchemaValidateUtil.class.getClassLoader().getResource(<span class="string">&quot;test_schema.xsd&quot;</span>).toString();</span><br><span class="line">     </span><br><span class="line">     <span class="keyword">try</span> &#123;</span><br><span class="line">         <span class="comment">//创建默认的XML错误处理器</span></span><br><span class="line">         <span class="type">XMLErrorHandler</span> <span class="variable">errorHandler</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">XMLErrorHandler</span>();</span><br><span class="line">         <span class="comment">//获取基于 SAX 的解析器的实例</span></span><br><span class="line">         <span class="type">SAXParserFactory</span> <span class="variable">factory</span> <span class="operator">=</span> SAXParserFactory.newInstance();</span><br><span class="line">         <span class="comment">//解析器在解析时验证 XML 内容。</span></span><br><span class="line">         factory.setValidating(<span class="literal">true</span>);</span><br><span class="line">         <span class="comment">//指定由此代码生成的解析器将提供对 XML 名称空间的支持。</span></span><br><span class="line">         factory.setNamespaceAware(<span class="literal">true</span>);</span><br><span class="line">         <span class="comment">//使用当前配置的工厂参数创建 SAXParser 的一个新实例。</span></span><br><span class="line">         <span class="type">SAXParser</span> <span class="variable">parser</span> <span class="operator">=</span> factory.newSAXParser();</span><br><span class="line">         <span class="comment">//创建一个读取工具</span></span><br><span class="line">         <span class="type">SAXReader</span> <span class="variable">xmlReader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SAXReader</span>();</span><br><span class="line">         <span class="comment">//获取要校验xml文档实例</span></span><br><span class="line">         <span class="type">Document</span> <span class="variable">xmlDocument</span> <span class="operator">=</span> (Document) xmlReader.read(xmlFileName);</span><br><span class="line">         <span class="comment">//设置 XMLReader 的基础实现中的特定属性。核心功能和属性列表可以在 [url]http://sax.sourceforge.net/?selected=get-set[/url] 中找到。</span></span><br><span class="line">         parser.setProperty(<span class="string">&quot;http://java.sun.com/xml/jaxp/properties/schemaLanguage&quot;</span>,</span><br><span class="line">                 <span class="string">&quot;http://www.w3.org/2001/XMLSchema&quot;</span>);</span><br><span class="line">         parser.setProperty(<span class="string">&quot;http://java.sun.com/xml/jaxp/properties/schemaSource&quot;</span>,xsdFileName);</span><br><span class="line">         <span class="comment">//创建一个SAXValidator校验工具，并设置校验工具的属性</span></span><br><span class="line">         <span class="type">SAXValidator</span> <span class="variable">validator</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SAXValidator</span>(parser.getXMLReader());</span><br><span class="line">         <span class="comment">//设置校验工具的错误处理器，当发生错误时，可以从处理器对象中得到错误信息。</span></span><br><span class="line">         validator.setErrorHandler(errorHandler);</span><br><span class="line">         <span class="comment">//校验</span></span><br><span class="line">         validator.validate(xmlDocument);</span><br><span class="line"></span><br><span class="line">         <span class="comment">// 错误输出方式1</span></span><br><span class="line">         <span class="type">XMLWriter</span> <span class="variable">writer</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">XMLWriter</span>(OutputFormat.createPrettyPrint());</span><br><span class="line">         <span class="comment">//如果错误信息不为空，说明校验失败，打印错误信息</span></span><br><span class="line">         <span class="keyword">if</span> (errorHandler.getErrors().hasContent()) &#123;</span><br><span class="line">             System.out.println(<span class="string">&quot;XML文件通过XSD文件校验失败！&quot;</span>);</span><br><span class="line">             writer.write(errorHandler.getErrors());</span><br><span class="line">         &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">             System.out.println(<span class="string">&quot;XML文件通过XSD文件校验成功！&quot;</span>);</span><br><span class="line">         &#125;</span><br><span class="line">         </span><br><span class="line">         <span class="comment">// 错误输出方式2</span></span><br><span class="line">         System.out.println();</span><br><span class="line">         <span class="type">StringBuilder</span> <span class="variable">errorMsg</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StringBuilder</span>();</span><br><span class="line"><span class="keyword">if</span> (errorHandler.getErrors().hasContent()) &#123;</span><br><span class="line">	List&lt;Element&gt; elements = errorHandler.getErrors().elements();</span><br><span class="line">	<span class="keyword">for</span> (Element element : elements) &#123;</span><br><span class="line">		<span class="type">String</span> <span class="variable">line</span> <span class="operator">=</span> String.valueOf(Integer.parseInt(element.attributeValue(<span class="string">&quot;line&quot;</span>)) - <span class="number">1</span>);</span><br><span class="line">		<span class="type">String</span> <span class="variable">text</span> <span class="operator">=</span> element.getText();</span><br><span class="line">		errorMsg.append(<span class="string">&quot;(第 &quot;</span> + line + <span class="string">&quot;行出现错误) &quot;</span> + text+<span class="string">&quot;\r\n&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	errorMsg.append(<span class="string">&quot;XML文件通过XSD文件校验失败！&quot;</span>);</span><br><span class="line">	System.out.println(errorMsg.toString());</span><br><span class="line">&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">	System.out.println(<span class="string">&quot;XML文件通过XSD文件校验成功！&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line">     &#125; <span class="keyword">catch</span> (Exception ex) &#123;</span><br><span class="line">         System.out.println(<span class="string">&quot;XML文件: &quot;</span> + xmlFileName + <span class="string">&quot; 通过XSD文件:&quot;</span> + xsdFileName + <span class="string">&quot;检验失败。/n原因： &quot;</span> + ex.getMessage());</span><br><span class="line">         ex.printStackTrace();</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://example.com/2020/01/12/Java%E5%AE%9E%E7%8E%B0xml%E6%96%87%E4%BB%B6%E7%9A%84xsd%E6%A0%A1%E9%AA%8C%EF%BC%88schema%E6%A0%A1%E9%AA%8C%EF%BC%89/" data-id="cli8hs3fu0005b4os1jy3fvgp" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/03/07/DispatcherServlet%E8%AF%B7%E6%B1%82%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          DispatcherServlet请求处理流程
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/01/12/schema%E4%B8%8E%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4%E7%9A%84%E4%BD%BF%E7%94%A8%E6%A1%88%E4%BE%8B/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">schema与命名空间的使用案例</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/03/13/Spring%E4%BA%8B%E5%8A%A1%E4%BA%94%E8%BE%B9%E5%BD%A2/">Spring事务五边形</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/07/DispatcherServlet%E8%AF%B7%E6%B1%82%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B/">DispatcherServlet请求处理流程</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/12/Java%E5%AE%9E%E7%8E%B0xml%E6%96%87%E4%BB%B6%E7%9A%84xsd%E6%A0%A1%E9%AA%8C%EF%BC%88schema%E6%A0%A1%E9%AA%8C%EF%BC%89/">Java实现xml文件的xsd校验（schema校验）</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/12/schema%E4%B8%8E%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4%E7%9A%84%E4%BD%BF%E7%94%A8%E6%A1%88%E4%BE%8B/">schema与命名空间的使用案例</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/11/%E4%BD%BF%E7%94%A8SpringAOP%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B3%A8%E8%A7%A3%E4%B9%8B%E5%88%87%E5%85%A5%E7%82%B9%E8%A1%A8%E8%BE%BE%E5%BC%8F/">使用SpringAOP实现自定义注解之切入点表达式</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2023 liujiahui<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/sun11/hexo-theme-paperbox" target="_blank">Paperbox</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+  <a href="#search" class="mobile-nav-link st-search-show-outputs">Search</a>
+</nav>
+
+  
+
+<!-- totop start -->
+<div id="totop">
+	<a title="To Top"></a>
+</div>
+<!-- totop end -->
+
+<!-- swiftype search start -->
+
+<!-- swiftype search end -->
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/lrsjng.jquery-qrcode/0.12.0/jquery.qrcode.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+</div>
+</body>
+</html>

@@ -1,0 +1,341 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  
+  <title>Git简明指南 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="1.起步1.1 设置username&amp;email 12$ git config --global user.name &quot;John Doe&quot;$ git config --global user.email johndoe@example.com  1.2 查看配置 1git config --list  1.3 初始化仓库、跟踪文件并提交 1234$ git init$">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git简明指南">
+<meta property="og:url" content="http://example.com/2019/03/23/Git%E7%AE%80%E6%98%8E%E6%8C%87%E5%8D%97/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="1.起步1.1 设置username&amp;email 12$ git config --global user.name &quot;John Doe&quot;$ git config --global user.email johndoe@example.com  1.2 查看配置 1git config --list  1.3 初始化仓库、跟踪文件并提交 1234$ git init$">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://jiahuixyz.github.io/img-service/img/git-life-cycle.png">
+<meta property="article:published_time" content="2019-03-23T14:39:14.000Z">
+<meta property="article:modified_time" content="2023-05-29T06:51:52.804Z">
+<meta property="article:author" content="liujiahui">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://jiahuixyz.github.io/img-service/img/git-life-cycle.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    <link href="//fonts.useso.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+  
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <nav id="upper-nav" class="inner">
+      <a id="main-nav-toggle" class="nav-icon"></a>
+      <div class="sub-nav">
+        
+        
+          <a id="nav-github" class="nav-icon" target="_blank" rel="noopener" href="https://github.com/jiahuixyz"></a>
+        
+      </div>
+    </nav>
+    <div id="header-title">
+      
+        <h1 id="blog-title-wrap">
+          <a href="/" id="blog-title">念牧童的博客</a>
+        </h1>
+      
+    </div>
+    <div id="contenedor">
+      <ul class="cube">
+        <li class="cara">Hexo</li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+      </ul>
+    </div>
+    <nav id="main-nav">
+      
+        <a class="main-nav-link" href="/">Home</a>
+      
+        <a class="main-nav-link" href="/archives">Archives</a>
+      
+        <a class="main-nav-link" href="/about">About</a>
+      
+<!--       <a class="main-nav-link st-search-show-outputs">Search</a> -->
+    </nav>
+  </div>
+</header>
+
+    <div class="outer">
+      <section id="main"><article id="post-Git简明指南" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2019/03/23/Git%E7%AE%80%E6%98%8E%E6%8C%87%E5%8D%97/" class="article-date">
+  <time datetime="2019-03-23T14:39:14.000Z" itemprop="datePublished">2019-03-23</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Git简明指南
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h3 id="1-起步"><a href="#1-起步" class="headerlink" title="1.起步"></a>1.起步</h3><p>1.1 设置username&amp;email</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git config --global user.name &quot;John Doe&quot;</span><br><span class="line">$ git config --global user.email johndoe@example.com</span><br></pre></td></tr></table></figure>
+
+<p>1.2 查看配置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --list</span><br></pre></td></tr></table></figure>
+
+<p>1.3 初始化仓库、跟踪文件并提交</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ git init</span><br><span class="line">$ git add *.c</span><br><span class="line">$ git add LICENSE</span><br><span class="line">$ git commit -m &#x27;initial project version&#x27;</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<h3 id="2-记录文件变化"><a href="#2-记录文件变化" class="headerlink" title="2.记录文件变化"></a>2.记录文件变化</h3><p>2.1 查看文件状态</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> $ git status -s</span><br><span class="line"> </span><br><span class="line">  M README</span><br><span class="line">M  lib/simplegit.rb</span><br><span class="line">MM Rakefile</span><br><span class="line">A  lib/git.rb</span><br><span class="line">?? LICENSE.txt</span><br></pre></td></tr></table></figure>
+
+<p>M代表modify，有两个可以出现的位置，<br><br>出现在右边的 M 表示该文件被修改了但是还没放入暂存区，<br><br>出现在左边的 M 表示该文件被修改了并放入了暂存区，<br><br>两个M表示该文件被修改并放入暂存区后又被修改了。</p>
+<p>2.2 添加文件至暂存区</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git add file</span><br></pre></td></tr></table></figure>
+
+<p>git add是个多功能命令：可以用它跟踪新文件，<br>或者把已修改文件放到暂存区，还能把合并时冲突的文件标记为已解决状态。 </p>
+<p>注意！如果你git add之后修改文件，这个文件会同时出现在暂存区和非暂存区,这时git commint只提交你最后一次运行 git add 命令时的那个版本，而不是你的最新版本。</p>
+<p>2.3 文件对比</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git diff --cached</span></span><br></pre></td></tr></table></figure>
+
+<p>表示暂存后（git add后）的文件与原始版本的对比</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git diff</span></span><br></pre></td></tr></table></figure>
+<p>表示未暂存（git add前）的文件与原始版本的对比</p>
+<p>也就是说，git add之前用git diff，之后用git diff –cached。<br><br>注意！如果暂存（git add）后又修改了文件，<br>则git diff比较未暂存的文件与暂存（git add）时的文件。</p>
+<p>2.4 跳过使用暂存区域（即跳过git add）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git commit -a -m &#x27;added new benchmarks&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>注意：只会提交已经跟踪过的文件，不会提交新添加的文件</p>
+<p>2.5 移除文件（即脱离追踪）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git rm PROJECTS.md</span><br></pre></td></tr></table></figure>
+
+<p>2.6 移动或重命名</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git mv README.md README</span><br></pre></td></tr></table></figure>
+
+<p>2.7 提交历史</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git log</span><br></pre></td></tr></table></figure>
+
+<p>2.8 取消暂存</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git reset HEAD file</span><br></pre></td></tr></table></figure>
+
+<p>2.9 还原文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git checkout -- file</span><br></pre></td></tr></table></figure>
+
+<p>2.10 文件状态变化周期图</p>
+<p><img src="https://jiahuixyz.github.io/img-service/img/git-life-cycle.png" alt="The picture was not found.
+"></p>
+<h3 id="3-远程仓库的使用"><a href="#3-远程仓库的使用" class="headerlink" title="3.远程仓库的使用"></a>3.远程仓库的使用</h3><p>3.1 查看远程仓库</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git remote -v</span></span><br><span class="line">origin	https://github.com/schacon/ticgit (fetch)</span><br><span class="line">origin	https://github.com/schacon/ticgit (push)</span><br></pre></td></tr></table></figure>
+
+<p>orgin是远程仓库的别名，默认origin</p>
+<p>3.2 详细查看远程仓库</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git remote show origin</span><br></pre></td></tr></table></figure>
+
+<p>它会列出远程仓库的 URL 与跟踪分支的信息，<br><br>告诉你git pull时哪两个分支会合并，git push时会推送到哪个分支</p>
+<p>3.3 添加远程仓库</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote add &lt;shortname&gt; &lt;url&gt;</span><br></pre></td></tr></table></figure>
+
+<p>3.4 移除远程仓库</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git remote rm origin</span><br></pre></td></tr></table></figure>
+
+<p>3.5 推送至上游</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git push origin &lt;local branch&gt;:&lt;remote branch&gt;</span><br></pre></td></tr></table></figure>
+
+<p>3.6 检出远程分支（即创建本地分支）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git checkout -b serverfix origin/serverfix</span><br><span class="line">$ git checkout --track origin/serverfix</span><br><span class="line"># --track会默认创建同名分支，两个命令作用相同，都会检出分支并指定追踪分支</span><br></pre></td></tr></table></figure>
+
+<p>3.7 查看追踪分支（即本地分支对应的远程分支）<br></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ git fetch --all</span><br><span class="line">$ git branch -vv</span><br><span class="line"># -vv并没有连接服务器，所以需要先fetch，</span><br><span class="line"># -vv还能够查看本地分支是否落后远程分支</span><br></pre></td></tr></table></figure>
+
+<p>追踪分支：如果你在git pull或git push时没有显式指定远程分支，则默认追踪分支为对应的远程分支</p>
+<p>3.8 修改当前分支的追踪分支</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git branch --set-upstream-to origin/serverfix</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">--set-upstream-to也可以用-u代替</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-更新代码"><a href="#4-更新代码" class="headerlink" title="4.更新代码"></a>4.更新代码</h3><p>git pull与git fetch的区别</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git pull origin master</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">相当于从远程获取最新版本并merge到本地</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git fetch origin</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">从远程获取最新版本，但不会自动创建本地分支，</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">只有一个不可以修改的 origin/master 指针，接下来你可以选择merge或checkout</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git fetch origin master:tmp</span> </span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">从远程仓库master分支获取最新，checkou到本地建立tmp分支</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git diff tmp</span> </span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">將当前分支和tmp进行对比</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git merge tmp</span> </span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">合并tmp分支到当前分支</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="5-分支"><a href="#5-分支" class="headerlink" title="5.分支"></a>5.分支</h3><p>5.1 新建分支</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch branchname</span><br></pre></td></tr></table></figure>
+
+<p>5.2 删除分支</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -d branchname</span><br></pre></td></tr></table></figure>
+
+<p>5.3 查看所有分支&amp;当前分支</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -a</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://example.com/2019/03/23/Git%E7%AE%80%E6%98%8E%E6%8C%87%E5%8D%97/" data-id="cli8hs3fr0002b4os64kfadr8" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/03/25/JVM%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          JVM内存管理
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/03/21/Markdown%E5%AE%9E%E7%94%A8%E8%AF%AD%E6%B3%95/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Markdown实用语法</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/03/13/Spring%E4%BA%8B%E5%8A%A1%E4%BA%94%E8%BE%B9%E5%BD%A2/">Spring事务五边形</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/07/DispatcherServlet%E8%AF%B7%E6%B1%82%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B/">DispatcherServlet请求处理流程</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/12/Java%E5%AE%9E%E7%8E%B0xml%E6%96%87%E4%BB%B6%E7%9A%84xsd%E6%A0%A1%E9%AA%8C%EF%BC%88schema%E6%A0%A1%E9%AA%8C%EF%BC%89/">Java实现xml文件的xsd校验（schema校验）</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/12/schema%E4%B8%8E%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4%E7%9A%84%E4%BD%BF%E7%94%A8%E6%A1%88%E4%BE%8B/">schema与命名空间的使用案例</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/11/%E4%BD%BF%E7%94%A8SpringAOP%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B3%A8%E8%A7%A3%E4%B9%8B%E5%88%87%E5%85%A5%E7%82%B9%E8%A1%A8%E8%BE%BE%E5%BC%8F/">使用SpringAOP实现自定义注解之切入点表达式</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2023 liujiahui<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/sun11/hexo-theme-paperbox" target="_blank">Paperbox</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+  <a href="#search" class="mobile-nav-link st-search-show-outputs">Search</a>
+</nav>
+
+  
+
+<!-- totop start -->
+<div id="totop">
+	<a title="To Top"></a>
+</div>
+<!-- totop end -->
+
+<!-- swiftype search start -->
+
+<!-- swiftype search end -->
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/lrsjng.jquery-qrcode/0.12.0/jquery.qrcode.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+</div>
+</body>
+</html>
