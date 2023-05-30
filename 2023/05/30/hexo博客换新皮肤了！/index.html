@@ -5,15 +5,22 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   
-  <title>Archives: 2019/5 | 念牧童的个人博客</title>
+  <title>hexo博客换新皮肤了！ | 念牧童的个人博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="念牧童的个人博客">
-<meta property="og:url" content="https://jiahuixyz.github.io/archives/2019/05/index.html">
+  <meta name="description" content="很久没打理博客了，最近准备写些文章，结果clone下来发现hexo都不能正常install了，原因是node版本有些高，和3.x的hexo不兼容，那么，索性这次就把hexo版本升级到最新的6.x，然后给博客换一个新主题。 具体思路是，下载新版的hexo-cli，用hexo init初始化一个文件夹，然后挑选自己喜欢主题，clone到themes下，接着将旧的post文件夹下的文章全部搬过来，然后呢">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hexo博客换新皮肤了！">
+<meta property="og:url" content="https://jiahuixyz.github.io/2023/05/30/hexo%E5%8D%9A%E5%AE%A2%E6%8D%A2%E6%96%B0%E7%9A%AE%E8%82%A4%E4%BA%86%EF%BC%81/index.html">
 <meta property="og:site_name" content="念牧童的个人博客">
+<meta property="og:description" content="很久没打理博客了，最近准备写些文章，结果clone下来发现hexo都不能正常install了，原因是node版本有些高，和3.x的hexo不兼容，那么，索性这次就把hexo版本升级到最新的6.x，然后给博客换一个新主题。 具体思路是，下载新版的hexo-cli，用hexo init初始化一个文件夹，然后挑选自己喜欢主题，clone到themes下，接着将旧的post文件夹下的文章全部搬过来，然后呢">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://jiahuixyz.github.io/img-service/img/old_blog.png">
+<meta property="og:image" content="https://jiahuixyz.github.io/img-service/img/new_blog.png">
+<meta property="article:published_time" content="2023-05-30T01:07:34.000Z">
+<meta property="article:modified_time" content="2023-05-30T03:33:08.115Z">
 <meta property="article:author" content="liujiahui">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://jiahuixyz.github.io/img-service/img/old_blog.png">
   
   
     <link rel="icon" href="/favicon.ico">
@@ -76,42 +83,73 @@
 </header>
 
     <div class="outer">
-      <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <h3 href="/2019/05/18/Java%E6%8E%92%E5%BA%8F%E4%B9%8BComparable%E4%B8%8EComparator/" class="archive-article-date">
-  <time datetime="2019-05-18T22:49:54.000Z" itemprop="datePublished">May 18</time>
+      <section id="main"><article id="post-hexo博客换新皮肤了！" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2023/05/30/hexo%E5%8D%9A%E5%AE%A2%E6%8D%A2%E6%96%B0%E7%9A%AE%E8%82%A4%E4%BA%86%EF%BC%81/" class="article-date">
+  <time datetime="2023-05-30T01:07:34.000Z" itemprop="datePublished">2023-05-30</time>
 </h3>
-      
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/05/18/Java%E6%8E%92%E5%BA%8F%E4%B9%8BComparable%E4%B8%8EComparator/">Java排序之Comparable与Comparator</a>
+    <h1 class="article-title" itemprop="name">
+      hexo博客换新皮肤了！
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-  
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <p>很久没打理博客了，最近准备写些文章，结果clone下来发现hexo都不能正常install了，原因是node版本有些高，和3.x的hexo不兼容，那么，索性这次就把hexo版本升级到最新的6.x，然后给博客换一个新主题。</p>
+<p>具体思路是，下载新版的hexo-cli，用hexo init初始化一个文件夹，然后挑选自己喜欢主题，clone到themes下，接着将旧的post文件夹下的文章全部搬过来，然后呢，就把博客在本地启动起来，左看看、右看看，哪里有不合适的就改改配置，或者改改主题的源码。</p>
+<p>改的差不多了，还有最重要的一步，配置一下自动部署到GitHub Pages。上次是用的一个叫hexo-deployer-git的hexo插件，能够实现一键部署，原理就是本地生成好静态文件，直接上传，这次打算换一种方式，用一下GitHub的Actions，具体做法也很简单，在.github&#x2F;workflows下建一个ci文件就行了，脚本官网上已经写好了。</p>
+<span id="more"></span>
 
-<!-- &laquo;&raquo;无法正常显示，手动将其替换成>> << --></section>
+<p>好了，最后对比下博客前后的变化吧～</p>
+<p>这个是旧的&#x3D;&#x3D;&gt;</p>
+<p><img src="https://jiahuixyz.github.io/img-service/img/old_blog.png"></p>
+<p>这个是新的&#x3D;&#x3D;&gt;</p>
+<p><img src="https://jiahuixyz.github.io/img-service/img/new_blog.png"></p>
+<p>怎么说呢，算是不同时期的喜好不一样吧，旧的主题是那种特别朴素的那种，直接使用了文章归档页当了主页，没有图片和装饰。新的博客主题可以自定义一张图片，这里我选了一张很喜欢的下雨打伞的图片，有了图片博客看着就比较自然了，平易近人的感觉，然后主页的文章也不只是显示标题了，还可以展示预先设定的文章摘要（摘要需要在文章里添加<code>&lt;!--more--&gt;</code>），说到这里要感谢下hexo-theme-paperbox和landscape-plus两个主题的作者sun11、xiangming，感谢你们做出了这么优秀的主题！</p>
+<p>好了，这篇小记就到此结束了～</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="https://jiahuixyz.github.io/2023/05/30/hexo%E5%8D%9A%E5%AE%A2%E6%8D%A2%E6%96%B0%E7%9A%AE%E8%82%A4%E4%BA%86%EF%BC%81/" data-id="cli9q4at3000cbtnm8ryvdzbb" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2020/03/13/Spring%E4%BA%8B%E5%8A%A1%E4%BA%94%E8%BE%B9%E5%BD%A2/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Spring事务五边形</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
       
       <aside id="sidebar">
   

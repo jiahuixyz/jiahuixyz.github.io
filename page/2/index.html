@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta property="og:type" content="website">
 <meta property="og:title" content="念牧童的个人博客">
-<meta property="og:url" content="http://example.com/page/2/index.html">
+<meta property="og:url" content="https://jiahuixyz.github.io/page/2/index.html">
 <meta property="og:site_name" content="念牧童的个人博客">
 <meta property="og:locale" content="en_US">
 <meta property="article:author" content="liujiahui">
@@ -78,6 +78,59 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-使用SpringAOP实现自定义注解之切入点表达式" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2020/01/11/%E4%BD%BF%E7%94%A8SpringAOP%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B3%A8%E8%A7%A3%E4%B9%8B%E5%88%87%E5%85%A5%E7%82%B9%E8%A1%A8%E8%BE%BE%E5%BC%8F/" class="article-date">
+  <time datetime="2020-01-11T20:13:40.000Z" itemprop="datePublished">2020-01-11</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/01/11/%E4%BD%BF%E7%94%A8SpringAOP%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B3%A8%E8%A7%A3%E4%B9%8B%E5%88%87%E5%85%A5%E7%82%B9%E8%A1%A8%E8%BE%BE%E5%BC%8F/">使用SpringAOP实现自定义注解之切入点表达式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>使用Spring AOP实现自定义注解时，关键在于切入点PointCut表达式的书写，即通过表达式扫描指定的注解。</p>
+<p>以下给出两种写法,这两种写法都可以扫描指定包下的注解。</p>
+<p>1、</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 作用：捕获方法异常，并修改异常返回结果</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Target(ElementType.METHOD)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> ExceptionMessageHandler &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ExceptionAnnotationAspect</span> &#123;</span><br><span class="line"> </span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Logger</span> <span class="variable">LOG</span> <span class="operator">=</span>Logger.getLogger(ExceptionAnnotationAspect.class);</span><br><span class="line"></span><br><span class="line"> <span class="meta">@Around(&quot;execution(@com.fish.webcore.annotation.ExceptionMessageHandler * com.fish.webcore..*.*(..))&quot;)</span></span><br><span class="line"> <span class="keyword">public</span> Object <span class="title function_">exceptionHandler</span><span class="params">(ProceedingJoinPoint proceedingJoinPoint)</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">   <span class="keyword">return</span> proceedingJoinPoint.proceed();</span><br><span class="line">  &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">   LOG.error(<span class="string">&quot;服务器内部错误!&quot;</span>, e);</span><br><span class="line">   <span class="keyword">return</span> JacksonUtil.getExceptionResult(e, <span class="string">&quot;服务器内部错误!&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        
+          <p class="article-more-link">
+            <a href="/2020/01/11/%E4%BD%BF%E7%94%A8SpringAOP%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B3%A8%E8%A7%A3%E4%B9%8B%E5%88%87%E5%85%A5%E7%82%B9%E8%A1%A8%E8%BE%BE%E5%BC%8F/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="https://jiahuixyz.github.io/2020/01/11/%E4%BD%BF%E7%94%A8SpringAOP%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B3%A8%E8%A7%A3%E4%B9%8B%E5%88%87%E5%85%A5%E7%82%B9%E8%A1%A8%E8%BE%BE%E5%BC%8F/" data-id="cli9q4at6000ebtnm2mfaheqk" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-Oracle常用语法" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <h3 href="/2019/10/26/Oracle%E5%B8%B8%E7%94%A8%E8%AF%AD%E6%B3%95/" class="article-date">
@@ -117,7 +170,7 @@
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://example.com/2019/10/26/Oracle%E5%B8%B8%E7%94%A8%E8%AF%AD%E6%B3%95/" data-id="cli92ygll0008eforck1669me" class="article-share-link">Share</a>
+        <a data-url="https://jiahuixyz.github.io/2019/10/26/Oracle%E5%B8%B8%E7%94%A8%E8%AF%AD%E6%B3%95/" data-id="cli9q4asx0008btnm3br65981" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -166,7 +219,7 @@
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://example.com/2019/07/21/%E8%87%A7%E5%85%8B%E5%AE%B6-%E5%B9%BB%E5%85%89/" data-id="cli92yglu000feforb3sy2mog" class="article-share-link">Share</a>
+        <a data-url="https://jiahuixyz.github.io/2019/07/21/%E8%87%A7%E5%85%8B%E5%AE%B6-%E5%B9%BB%E5%85%89/" data-id="cli9q4at8000gbtnm0dzkbj46" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -227,7 +280,7 @@
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://example.com/2019/05/18/Java%E6%8E%92%E5%BA%8F%E4%B9%8BComparable%E4%B8%8EComparator/" data-id="cli92yglj0006eforbkhlelaj" class="article-share-link">Share</a>
+        <a data-url="https://jiahuixyz.github.io/2019/05/18/Java%E6%8E%92%E5%BA%8F%E4%B9%8BComparable%E4%B8%8EComparator/" data-id="cli9q4asv0006btnm884vbppj" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -313,69 +366,7 @@
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://example.com/2019/04/11/Spring-IOC%E5%92%8CAOP%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/" data-id="cli92yglm0009efor1lqdeaah" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-Hibernate缓存机制与Spring缓存框架的区别与联系" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2019/04/11/Hibernate%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6%E4%B8%8ESpring%E7%BC%93%E5%AD%98%E6%A1%86%E6%9E%B6%E7%9A%84%E5%8C%BA%E5%88%AB%E4%B8%8E%E8%81%94%E7%B3%BB/" class="article-date">
-  <time datetime="2019-04-11T16:35:36.000Z" itemprop="datePublished">2019-04-11</time>
-</h3>
-    
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/11/Hibernate%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6%E4%B8%8ESpring%E7%BC%93%E5%AD%98%E6%A1%86%E6%9E%B6%E7%9A%84%E5%8C%BA%E5%88%AB%E4%B8%8E%E8%81%94%E7%B3%BB/">Hibernate缓存机制与Spring缓存框架的区别与联系</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>Hibernate一级缓存</li>
-<li>Hibernate二级缓存</li>
-<li>Spring缓存机制</li>
-<li>Hibernate缓存与Spring缓存的比较</li>
-</ul>
-<h2 id="Hibernate一级缓存"><a href="#Hibernate一级缓存" class="headerlink" title="Hibernate一级缓存"></a>Hibernate一级缓存</h2><p>一级缓存是Session级别的缓存(即当前Session有效)，默认启用。</p>
-<p>一级缓存的key为ID(主键)。</p>
-<p>当执行load&#x2F;get&#x2F;list&#x2F;iterator&#x2F;save&#x2F;update&#x2F;saveOrUpdate等方法时会把得到的实体对象放入一级缓存中（只支持实体对象缓存，不支持属性的缓存），之后在同一个session范围内执行load&#x2F;get&#x2F;iterator等查询语句（不包括list）查询缓存过的数据时，Hibernate不会去数据库中查询。</p>
-<p>当程序保存或修改实体时，不会立即同步到数据库，而是保存在一级缓存中，只有程序显示调用Session的flush()或close()方法才会刷新至数据库，这样可以减少数据库的交互，提高数据库的访问性能。</p>
-<p>一级缓存清除方法：</p>
-<ul>
-<li>contains(object obj)</li>
-<li>evict(Object obj)</li>
-<li>clear()
-        
-          <p class="article-more-link">
-            <a href="/2019/04/11/Hibernate%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6%E4%B8%8ESpring%E7%BC%93%E5%AD%98%E6%A1%86%E6%9E%B6%E7%9A%84%E5%8C%BA%E5%88%AB%E4%B8%8E%E8%81%94%E7%B3%BB/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-        <a data-url="http://example.com/2019/04/11/Hibernate%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6%E4%B8%8ESpring%E7%BC%93%E5%AD%98%E6%A1%86%E6%9E%B6%E7%9A%84%E5%8C%BA%E5%88%AB%E4%B8%8E%E8%81%94%E7%B3%BB/" data-id="cli92yglg0003eforglnq20t5" class="article-share-link">Share</a>
+        <a data-url="https://jiahuixyz.github.io/2019/04/11/Spring-IOC%E5%92%8CAOP%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/" data-id="cli9q4asy0009btnmg6q3asbk" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -390,7 +381,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&lt;&lt; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &gt;&gt;</a>
+      <a class="extend prev" rel="prev" href="/">&lt;&lt; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">Next &gt;&gt;</a>
     </nav>
   
 
@@ -403,6 +394,10 @@
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2023/05/30/hexo%E5%8D%9A%E5%AE%A2%E6%8D%A2%E6%96%B0%E7%9A%AE%E8%82%A4%E4%BA%86%EF%BC%81/">hexo博客换新皮肤了！</a>
+          </li>
         
           <li>
             <a href="/2020/03/13/Spring%E4%BA%8B%E5%8A%A1%E4%BA%94%E8%BE%B9%E5%BD%A2/">Spring事务五边形</a>
@@ -420,10 +415,6 @@
             <a href="/2020/01/12/schema%E4%B8%8E%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4%E7%9A%84%E4%BD%BF%E7%94%A8%E6%A1%88%E4%BE%8B/">schema与命名空间的使用案例</a>
           </li>
         
-          <li>
-            <a href="/2020/01/11/%E4%BD%BF%E7%94%A8SpringAOP%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B3%A8%E8%A7%A3%E4%B9%8B%E5%88%87%E5%85%A5%E7%82%B9%E8%A1%A8%E8%BE%BE%E5%BC%8F/">使用SpringAOP实现自定义注解之切入点表达式</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -435,7 +426,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">5</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/05/">May 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">5</span></li></ul>
     </div>
   </div>
 
