@@ -78,6 +78,154 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-RedisTemplate大量使用的callback机制（转）" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2023/06/05/RedisTemplate%E5%A4%A7%E9%87%8F%E4%BD%BF%E7%94%A8%E7%9A%84callback%E6%9C%BA%E5%88%B6%EF%BC%88%E8%BD%AC%EF%BC%89/" class="article-date">
+  <time datetime="2023-06-05T16:01:13.000Z" itemprop="datePublished">2023-06-05</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/06/05/RedisTemplate%E5%A4%A7%E9%87%8F%E4%BD%BF%E7%94%A8%E7%9A%84callback%E6%9C%BA%E5%88%B6%EF%BC%88%E8%BD%AC%EF%BC%89/">RedisTemplate大量使用的callback机制（转）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <p>假如要让你封装jedis以便让外界调用你大概率会像下面方法一样实现。</p>
+<pre><code>@Service
+public class JedisSpringDemo &#123;
+    @Resource(name = &quot;shardedJedisPool&quot;)
+    private ShardedJedisPool shardedJedisPool;
+    
+    public String set(String key, String value)&#123;
+        ShardedJedis shardedJedis = null;
+        try&#123;
+            // 从连接池中获取jedis分片对象
+            shardedJedis = shardedJedisPool.getResource();
+            // 设置值到redis中
+            return shardedJedis.set(key, value);
+        &#125;catch (Exception e)&#123;
+            System.out.println(e.getMessage());
+        &#125;finally &#123;
+            if(null != shardedJedis)&#123;
+                shardedJedis.close();
+            &#125;
+        &#125;
+        return null;
+    &#125;
+
+    public String get(String key)&#123;
+        ShardedJedis shardedJedis = null;
+        try&#123;
+            // 从连接池中获取jedis分片对象
+            shardedJedis = shardedJedisPool.getResource();
+            // 从redis中获取key对应value
+            return shardedJedis.get(key);
+        &#125;catch (Exception e)&#123;
+            System.out.println(e.getMessage());
+        &#125;finally &#123;
+            if(null != shardedJedis)&#123;
+                shardedJedis.close();
+            &#125;
+        &#125;
+        return null;
+    &#125;
+&#125;
+</code></pre>
+<p>上面的这段代码违反了DRY原则，两个方法get()和set()大部分代码是相同的（try，catch，finally这部分代码），唯一不同的就是我们return的那一行具体的调用方法，如果像这种方法很多的话(jedis提供了几十种类似的方法)，我们的代码重复率是很高的，代码重复率一旦高起来，相应的维护成本也会提高，下面我们就来引进一种改进方法–回调机制。</p>
+<p>首先，我们创建一个接口类，该接口定义Jedis的操作，代码如下：</p>
+<pre><code>public interface RedisOperations &#123;
+    &lt;T&gt; T execute(ConnectionCallback&lt;T&gt; action);
+   String set(final String key, final String value);
+   String get(final String key);
+&#125;
+</code></pre>
+<p>其次，定义连接Redis服务器的回调接口，代码如下：</p>
+<pre><code>public interface ConnectionCallback&lt;T&gt; &#123;
+    T doInRedis(ShardedJedis shardedJedis);
+&#125;
+</code></pre>
+<p>最后定义具体的操作服务类，代码如下：</p>
+<pre><code>@Service(&quot;redisTemplate&quot;)
+public class RedisTemplate implements RedisOperations&#123;
+    @Resource(name = &quot;shardedJedisPool&quot;)
+    private ShardedJedisPool shardedJedisPool;
+    
+    @Override
+    public &lt;T&gt; T execute(ConnectionCallback&lt;T&gt; action) &#123;
+        ShardedJedis shardedJedis = null;
+        try&#123;
+            // 从连接池中获取jedis分片对象
+            shardedJedis = shardedJedisPool.getResource();
+            
+            return action.doInRedis(shardedJedis);
+            
+        &#125;catch (Exception e)&#123;
+            System.out.println(e.getMessage());
+        &#125;finally &#123;
+            if(null != shardedJedis)&#123;
+                shardedJedis.close();
+            &#125;
+        &#125;
+        return null;
+    &#125;
+    
+   /**
+     * attention:真正封装的方法，非常的简洁干脆
+     */
+    public String set(final String key, final String value)&#123;
+        return execute(new ConnectionCallback&lt;String&gt;() &#123;
+            @Override
+            public String doInRedis(
+                    ShardedJedis shardedJedis) &#123;
+                return shardedJedis.set(key, value);
+            &#125;
+        &#125;);
+    &#125;
+    
+    public String get(final String key)&#123;
+        return execute(new ConnectionCallback&lt;String&gt;()&#123;
+            @Override
+            public String doInRedis(ShardedJedis shardedJedis) &#123;
+                return shardedJedis.get(key);
+            &#125;
+        &#125;);
+    &#125;
+&#125;
+</code></pre>
+<p>通过上面的代码，我们可以清晰的看到，将try，catch，finally部分的公共代码都封装到了execute()函数中，在具体方法内实现回调方法的具体业务逻辑即可，代码的复用率更高了。<br>如果大家对spring jdbc或者是spring data redis的源码研究过，就应该知道JdbcTemplate和RedisTemplate这两个类，这两个框架中用到了大量的callback机制。<br>一言以蔽之–如果你调用我，那么我就回调你传给我的对象的方法。</p>
+<p><br>原文链接：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/26ba689b5549">https://www.jianshu.com/p/26ba689b5549</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="https://jiahuixyz.github.io/2023/06/05/RedisTemplate%E5%A4%A7%E9%87%8F%E4%BD%BF%E7%94%A8%E7%9A%84callback%E6%9C%BA%E5%88%B6%EF%BC%88%E8%BD%AC%EF%BC%89/" data-id="cliiki40s0009bkp32cj37zit" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-hexo博客换新皮肤了！" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <h3 href="/2023/05/30/hexo%E5%8D%9A%E5%AE%A2%E6%8D%A2%E6%96%B0%E7%9A%AE%E8%82%A4%E4%BA%86%EF%BC%81/" class="article-date">
@@ -115,7 +263,7 @@
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="https://jiahuixyz.github.io/2023/05/30/hexo%E5%8D%9A%E5%AE%A2%E6%8D%A2%E6%96%B0%E7%9A%AE%E8%82%A4%E4%BA%86%EF%BC%81/" data-id="cli9q4at3000cbtnm8ryvdzbb" class="article-share-link">Share</a>
+        <a data-url="https://jiahuixyz.github.io/2023/05/30/hexo%E5%8D%9A%E5%AE%A2%E6%8D%A2%E6%96%B0%E7%9A%AE%E8%82%A4%E4%BA%86%EF%BC%81/" data-id="cliiki40w000dbkp3ab3afnfi" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -171,7 +319,7 @@
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="https://jiahuixyz.github.io/2020/03/13/Spring%E4%BA%8B%E5%8A%A1%E4%BA%94%E8%BE%B9%E5%BD%A2/" data-id="cli9q4at0000abtnmhxp70d24" class="article-share-link">Share</a>
+        <a data-url="https://jiahuixyz.github.io/2020/03/13/Spring%E4%BA%8B%E5%8A%A1%E4%BA%94%E8%BE%B9%E5%BD%A2/" data-id="cliiki40u000bbkp3auqdgr6w" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -233,7 +381,7 @@
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="https://jiahuixyz.github.io/2020/03/07/DispatcherServlet%E8%AF%B7%E6%B1%82%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B/" data-id="cli9q4ask0001btnm269tbnhu" class="article-share-link">Share</a>
+        <a data-url="https://jiahuixyz.github.io/2020/03/07/DispatcherServlet%E8%AF%B7%E6%B1%82%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B/" data-id="cliiki40i0001bkp322pb9biz" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -287,63 +435,7 @@
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="https://jiahuixyz.github.io/2020/01/12/Java%E5%AE%9E%E7%8E%B0xml%E6%96%87%E4%BB%B6%E7%9A%84xsd%E6%A0%A1%E9%AA%8C%EF%BC%88schema%E6%A0%A1%E9%AA%8C%EF%BC%89/" data-id="cli9q4asu0005btnm9qzof9ym" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-schema与命名空间的使用案例" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2020/01/12/schema%E4%B8%8E%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4%E7%9A%84%E4%BD%BF%E7%94%A8%E6%A1%88%E4%BE%8B/" class="article-date">
-  <time datetime="2020-01-12T15:03:30.000Z" itemprop="datePublished">2020-01-12</time>
-</h3>
-    
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/01/12/schema%E4%B8%8E%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4%E7%9A%84%E4%BD%BF%E7%94%A8%E6%A1%88%E4%BE%8B/">schema与命名空间的使用案例</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="1、xml如何使用schema"><a href="#1、xml如何使用schema" class="headerlink" title="1、xml如何使用schema"></a>1、xml如何使用schema</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">	<span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="attr">xmlns:tx</span>=<span class="string">&quot;http://www.springframework.org/schema/tx&quot;</span></span></span><br><span class="line"><span class="tag">	<span class="attr">xmlns:aop</span>=<span class="string">&quot;http://www.springframework.org/schema/aop&quot;</span> <span class="attr">xmlns:context</span>=<span class="string">&quot;http://www.springframework.org/schema/context&quot;</span></span></span><br><span class="line"><span class="tag">	<span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd</span></span></span><br><span class="line"><span class="string"><span class="tag">		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd</span></span></span><br><span class="line"><span class="string"><span class="tag">		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd</span></span></span><br><span class="line"><span class="string"><span class="tag">		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>解释：<br></p>
-<ul>
-<li><p>一份xml中，只能有一个省略别名的命名空间，如：<br><br><strong>xmlns&#x3D;”<a target="_blank" rel="noopener" href="http://www.springframework.org/schema/beans">http://www.springframework.org/schema/beans</a>“</strong> ；</p>
-</li>
-<li><p>省略别名和未省略别名的命名空间都需要在<strong>xsi:schemaLocation</strong>处填写实际的xsd地址；<br><br>Spring这份xml引用xsd文件路径是网址，如果我们的不是网址的话可以这么写<br><br>**xsi:schemaLocation&#x3D;”<a target="_blank" rel="noopener" href="http://spec.nst.cn/specification/namespace">http://spec.nst.cn/specification/namespace</a> schema.xsd “**（相对路径）；</p>
-</li>
-<li><p>另外<strong>xmlns:xsi&#x3D;”<a target="_blank" rel="noopener" href="http://www.w3.org/2001/XMLSchema-instance">http://www.w3.org/2001/XMLSchema-instance</a>“</strong> 是固定的，作用就是让我可以使用<strong>xsi:schemaLocation</strong> 这个属性；</p>
-        
-          <p class="article-more-link">
-            <a href="/2020/01/12/schema%E4%B8%8E%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4%E7%9A%84%E4%BD%BF%E7%94%A8%E6%A1%88%E4%BE%8B/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-        <a data-url="https://jiahuixyz.github.io/2020/01/12/schema%E4%B8%8E%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4%E7%9A%84%E4%BD%BF%E7%94%A8%E6%A1%88%E4%BE%8B/" data-id="cli9q4at4000dbtnm2v6ra1u6" class="article-share-link">Share</a>
+        <a data-url="https://jiahuixyz.github.io/2020/01/12/Java%E5%AE%9E%E7%8E%B0xml%E6%96%87%E4%BB%B6%E7%9A%84xsd%E6%A0%A1%E9%AA%8C%EF%BC%88schema%E6%A0%A1%E9%AA%8C%EF%BC%89/" data-id="cliiki40o0005bkp3ecz6eltj" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -373,6 +465,10 @@
       <ul>
         
           <li>
+            <a href="/2023/06/05/RedisTemplate%E5%A4%A7%E9%87%8F%E4%BD%BF%E7%94%A8%E7%9A%84callback%E6%9C%BA%E5%88%B6%EF%BC%88%E8%BD%AC%EF%BC%89/">RedisTemplate大量使用的callback机制（转）</a>
+          </li>
+        
+          <li>
             <a href="/2023/05/30/hexo%E5%8D%9A%E5%AE%A2%E6%8D%A2%E6%96%B0%E7%9A%AE%E8%82%A4%E4%BA%86%EF%BC%81/">hexo博客换新皮肤了！</a>
           </li>
         
@@ -388,10 +484,6 @@
             <a href="/2020/01/12/Java%E5%AE%9E%E7%8E%B0xml%E6%96%87%E4%BB%B6%E7%9A%84xsd%E6%A0%A1%E9%AA%8C%EF%BC%88schema%E6%A0%A1%E9%AA%8C%EF%BC%89/">Java实现xml文件的xsd校验（schema校验）</a>
           </li>
         
-          <li>
-            <a href="/2020/01/12/schema%E4%B8%8E%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4%E7%9A%84%E4%BD%BF%E7%94%A8%E6%A1%88%E4%BE%8B/">schema与命名空间的使用案例</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -403,7 +495,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/05/">May 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">5</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/06/">June 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/05/">May 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">5</span></li></ul>
     </div>
   </div>
 
