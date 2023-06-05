@@ -102,7 +102,6 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
         <p>假如要让你封装jedis以便让外界调用你大概率会像下面方法一样实现。</p>
 <pre><code>@Service
 public class JedisSpringDemo &#123;
@@ -145,75 +144,17 @@ public class JedisSpringDemo &#123;
 &#125;
 </code></pre>
 <p>上面的这段代码违反了DRY原则，两个方法get()和set()大部分代码是相同的（try，catch，finally这部分代码），唯一不同的就是我们return的那一行具体的调用方法，如果像这种方法很多的话(jedis提供了几十种类似的方法)，我们的代码重复率是很高的，代码重复率一旦高起来，相应的维护成本也会提高，下面我们就来引进一种改进方法–回调机制。</p>
-<p>首先，我们创建一个接口类，该接口定义Jedis的操作，代码如下：</p>
-<pre><code>public interface RedisOperations &#123;
-    &lt;T&gt; T execute(ConnectionCallback&lt;T&gt; action);
-   String set(final String key, final String value);
-   String get(final String key);
-&#125;
-</code></pre>
-<p>其次，定义连接Redis服务器的回调接口，代码如下：</p>
-<pre><code>public interface ConnectionCallback&lt;T&gt; &#123;
-    T doInRedis(ShardedJedis shardedJedis);
-&#125;
-</code></pre>
-<p>最后定义具体的操作服务类，代码如下：</p>
-<pre><code>@Service(&quot;redisTemplate&quot;)
-public class RedisTemplate implements RedisOperations&#123;
-    @Resource(name = &quot;shardedJedisPool&quot;)
-    private ShardedJedisPool shardedJedisPool;
-    
-    @Override
-    public &lt;T&gt; T execute(ConnectionCallback&lt;T&gt; action) &#123;
-        ShardedJedis shardedJedis = null;
-        try&#123;
-            // 从连接池中获取jedis分片对象
-            shardedJedis = shardedJedisPool.getResource();
-            
-            return action.doInRedis(shardedJedis);
-            
-        &#125;catch (Exception e)&#123;
-            System.out.println(e.getMessage());
-        &#125;finally &#123;
-            if(null != shardedJedis)&#123;
-                shardedJedis.close();
-            &#125;
-        &#125;
-        return null;
-    &#125;
-    
-   /**
-     * attention:真正封装的方法，非常的简洁干脆
-     */
-    public String set(final String key, final String value)&#123;
-        return execute(new ConnectionCallback&lt;String&gt;() &#123;
-            @Override
-            public String doInRedis(
-                    ShardedJedis shardedJedis) &#123;
-                return shardedJedis.set(key, value);
-            &#125;
-        &#125;);
-    &#125;
-    
-    public String get(final String key)&#123;
-        return execute(new ConnectionCallback&lt;String&gt;()&#123;
-            @Override
-            public String doInRedis(ShardedJedis shardedJedis) &#123;
-                return shardedJedis.get(key);
-            &#125;
-        &#125;);
-    &#125;
-&#125;
-</code></pre>
-<p>通过上面的代码，我们可以清晰的看到，将try，catch，finally部分的公共代码都封装到了execute()函数中，在具体方法内实现回调方法的具体业务逻辑即可，代码的复用率更高了。<br>如果大家对spring jdbc或者是spring data redis的源码研究过，就应该知道JdbcTemplate和RedisTemplate这两个类，这两个框架中用到了大量的callback机制。<br>一言以蔽之–如果你调用我，那么我就回调你传给我的对象的方法。</p>
-<p><br>原文链接：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/26ba689b5549">https://www.jianshu.com/p/26ba689b5549</a></p>
-
+        
+          <p class="article-more-link">
+            <a href="/2023/06/05/RedisTemplate%E5%A4%A7%E9%87%8F%E4%BD%BF%E7%94%A8%E7%9A%84callback%E6%9C%BA%E5%88%B6%EF%BC%88%E8%BD%AC%EF%BC%89/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="https://jiahuixyz.github.io/2023/06/05/RedisTemplate%E5%A4%A7%E9%87%8F%E4%BD%BF%E7%94%A8%E7%9A%84callback%E6%9C%BA%E5%88%B6%EF%BC%88%E8%BD%AC%EF%BC%89/" data-id="cliiki40s0009bkp32cj37zit" class="article-share-link">Share</a>
+        <a data-url="https://jiahuixyz.github.io/2023/06/05/RedisTemplate%E5%A4%A7%E9%87%8F%E4%BD%BF%E7%94%A8%E7%9A%84callback%E6%9C%BA%E5%88%B6%EF%BC%88%E8%BD%AC%EF%BC%89/" data-id="cliil0mk60009byor1mu647p7" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -263,7 +204,7 @@ public class RedisTemplate implements RedisOperations&#123;
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="https://jiahuixyz.github.io/2023/05/30/hexo%E5%8D%9A%E5%AE%A2%E6%8D%A2%E6%96%B0%E7%9A%AE%E8%82%A4%E4%BA%86%EF%BC%81/" data-id="cliiki40w000dbkp3ab3afnfi" class="article-share-link">Share</a>
+        <a data-url="https://jiahuixyz.github.io/2023/05/30/hexo%E5%8D%9A%E5%AE%A2%E6%8D%A2%E6%96%B0%E7%9A%AE%E8%82%A4%E4%BA%86%EF%BC%81/" data-id="cliil0mkb000dbyor5j826tkb" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -319,7 +260,7 @@ public class RedisTemplate implements RedisOperations&#123;
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="https://jiahuixyz.github.io/2020/03/13/Spring%E4%BA%8B%E5%8A%A1%E4%BA%94%E8%BE%B9%E5%BD%A2/" data-id="cliiki40u000bbkp3auqdgr6w" class="article-share-link">Share</a>
+        <a data-url="https://jiahuixyz.github.io/2020/03/13/Spring%E4%BA%8B%E5%8A%A1%E4%BA%94%E8%BE%B9%E5%BD%A2/" data-id="cliil0mk9000bbyor5hfeev36" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -381,7 +322,7 @@ public class RedisTemplate implements RedisOperations&#123;
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="https://jiahuixyz.github.io/2020/03/07/DispatcherServlet%E8%AF%B7%E6%B1%82%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B/" data-id="cliiki40i0001bkp322pb9biz" class="article-share-link">Share</a>
+        <a data-url="https://jiahuixyz.github.io/2020/03/07/DispatcherServlet%E8%AF%B7%E6%B1%82%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B/" data-id="cliil0mjr0001byorgggsei3m" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -435,7 +376,7 @@ public class RedisTemplate implements RedisOperations&#123;
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="https://jiahuixyz.github.io/2020/01/12/Java%E5%AE%9E%E7%8E%B0xml%E6%96%87%E4%BB%B6%E7%9A%84xsd%E6%A0%A1%E9%AA%8C%EF%BC%88schema%E6%A0%A1%E9%AA%8C%EF%BC%89/" data-id="cliiki40o0005bkp3ecz6eltj" class="article-share-link">Share</a>
+        <a data-url="https://jiahuixyz.github.io/2020/01/12/Java%E5%AE%9E%E7%8E%B0xml%E6%96%87%E4%BB%B6%E7%9A%84xsd%E6%A0%A1%E9%AA%8C%EF%BC%88schema%E6%A0%A1%E9%AA%8C%EF%BC%89/" data-id="cliil0mk10005byoraz566eo0" class="article-share-link">Share</a>
         
       </div>
     </footer>
